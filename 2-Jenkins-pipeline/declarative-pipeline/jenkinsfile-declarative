@@ -6,13 +6,23 @@ pipeline {
             steps {
                 // Run build commands
                 sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
+                sh 'echo "Building project..."'
             }
         }
         
         stage('Test') {
             steps {
                 // Run tests
-                sh 'echo "Running tests..."'
+                sh 'echo "Running tests..."' 
             }
         }
         
