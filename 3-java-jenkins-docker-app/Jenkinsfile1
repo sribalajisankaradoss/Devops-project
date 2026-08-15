@@ -7,11 +7,10 @@ pipeline {
 
         stage('Pull the code ') {
             steps {
-                sh '''
-                    rm -rf Devops-project
-                    git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
-                    
-                '''
+
+                sh 'rm -rf Devops-project'
+
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
             }
         }
         stage('Change the DIR and clean package') {
