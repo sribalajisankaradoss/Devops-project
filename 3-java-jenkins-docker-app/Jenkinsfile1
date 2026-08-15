@@ -10,6 +10,13 @@ pipeline {
                 git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
             }
         }
+        stage('Debug Path') {
+            steps {
+              sh 'pwd'
+              sh 'ls -la'
+              sh 'find . -name "pom.xml"'
+            }
+        }
         stage('Change the DIR and clean package') {
             steps {
                 dir('Devops-project/3-java-jenkins-docker-app') {
