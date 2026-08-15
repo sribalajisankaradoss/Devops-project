@@ -3,26 +3,19 @@ pipeline {
 
     stages {
 
-        stage('Pull the code & move to correct dir') {
+        stage('Pull the code ') {
             steps {
                 sh '''
                     rm -rf Devops-project
-                    git clone https://github.com/sribalajisankaradoss/Devops-project.git
-                    cd Devops-project/3-java-jenkins-docker-app
-
-                    echo "Current directory:"
-                    pwd
-
-                    echo "Files:"
-                    ls -la
+                    git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
+                    
                 '''
             }
         }
-
-        stage('Maven Install & Build') {
+        stage('Change the DIR and clean package') {
             steps {
                 dir('Devops-project/3-java-jenkins-docker-app') {
-                    sh '''
+                sh '''
                         echo "Checking Maven installation..."
 
                         if command -v mvn >/dev/null 2>&1; then
@@ -40,7 +33,22 @@ pipeline {
                         echo "Building Java application..."
                         mvn clean package
                     '''
-                }
+}
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('Devops-project/3-java-jenkins-docker-app') {
+                sh 'mvn test'
+                    sh 'mvn compile'
+}
+            }
+        }
+        stage('Compile') {
+            steps {
+                dir('Devops-project/3-java-jenkins-docker-app') {
+                    sh 'mvn compile'
+}
             }
         }
 
