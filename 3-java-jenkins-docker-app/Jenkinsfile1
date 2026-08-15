@@ -35,7 +35,7 @@ pipeline {
                         echo "Building Java application..."
                         mvn clean package
                     '''
-}
+                }
             }
         }
         stage('Test') {
@@ -43,14 +43,14 @@ pipeline {
                 dir('Devops-project/3-java-jenkins-docker-app') {
                 sh 'mvn test'
                     sh 'mvn compile'
-}
+                }
             }
         }
         stage('Compile') {
             steps {
                 dir('Devops-project/3-java-jenkins-docker-app') {
                     sh 'mvn compile'
-}
+                }
             }
         }
 
@@ -71,6 +71,49 @@ pipeline {
                     sh '''
                         echo "Starting Docker container..."
                         docker run --rm -d -p 9090:9090 java-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Docker tag') {
+            steps {
+                dir('Devops-project/3-java-jenkins-docker-app') {
+                    sh '''
+                        docker tag java-jenkins-docker:latest bala29/java-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Docker login') {
+            steps {
+               withCredentials ([
+                usernamePassword(
+                    credentialsId : 'docker-creds-bala',
+                    usernameVariable : 'Docker-USERNAME'
+                    passwordVariable : 'Docker-Password'
+                )
+               ]){
+                sh 
+                '''
+                echo "$Docker-Password" | docker login \ -u "$Docker-USERNAME" \ --password--stdin
+                '''
+               }
+            }
+        }
+        stage('Docker Image Push') {
+            steps {
+                dir('Devops-project/3-java-jenkins-docker-app') {
+                    sh '''
+                        docker push bala29/java-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                dir('Devops-project/3-java-jenkins-docker-app') {
+                    sh '''
+                        cleanWs()
                     '''
                 }
             }
