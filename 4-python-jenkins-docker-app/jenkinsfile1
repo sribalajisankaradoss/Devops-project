@@ -1,5 +1,5 @@
 pipeline {
-    agent 'any'
+    agent any
     stages {
 
         stage('Pull the code ') {
@@ -58,18 +58,18 @@ pipeline {
         stage('Compile') {
             steps {
                 dir('4-python-jenkins-docker-app') {
-                sh 'python3 -m compileall .'
+                sh 'python3 -m py_compile app.py.'
                 }
             }
         }
         stage('Test') {
             steps {
                 dir('4-python-jenkins-docker-app') {
-                    sh 'python3 -m pytest'
+                    sh 'python3 -m unittest discover tests'
                 }
             }
         }
-        stage('Test') {
+        stage('Build') {
             steps {
                 dir('4-python-jenkins-docker-app') {
                     sh 'python3 -m build'
@@ -133,12 +133,16 @@ pipeline {
                 }
             }
         }
-        stage('Clean') {
-            steps {
-                dir('4-python-jenkins-docker-app') {
-                        cleanWs()
-                }
-            }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
