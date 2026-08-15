@@ -10,16 +10,10 @@ pipeline {
                 git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
             }
         }
-        stage('Debug Path') {
-            steps {
-              sh 'pwd'
-              sh 'ls -la'
-              sh 'find . -name "pom.xml"'
-            }
-        }
+        
         stage('Change the DIR and clean package') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                 sh '''
                         echo "Checking Maven installation..."
 
@@ -43,7 +37,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                 sh 'mvn test'
                     sh 'mvn compile'
                 }
@@ -51,7 +45,7 @@ pipeline {
         }
         stage('Compile') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                     sh 'mvn compile'
                 }
             }
@@ -59,7 +53,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                     sh '''
                         echo "Building Docker image..."
                         docker build -t java-jenkins-docker:latest .
@@ -70,7 +64,7 @@ pipeline {
 
         stage('Docker Run') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                     sh '''
                         echo "Starting Docker container..."
                         docker run --rm -d -p 9090:9090 java-jenkins-docker:latest
@@ -80,7 +74,7 @@ pipeline {
         }
         stage('Docker tag') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                     sh '''
                         docker tag java-jenkins-docker:latest bala29/java-jenkins-docker:latest
                     '''
@@ -115,7 +109,7 @@ pipeline {
         }
         stage('Docker Push') {
             steps {
-                dir('Devops-project/3-java-jenkins-docker-app') {
+                dir('3-java-jenkins-docker-app') {
                     sh '''
                         cleanWs()
                     '''
