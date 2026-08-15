@@ -110,9 +110,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 dir('3-java-jenkins-docker-app') {
-                    sh '''
                         cleanWs()
-                    '''
                 }
             }
         }
