@@ -89,13 +89,13 @@ pipeline {
                withCredentials ([
                 usernamePassword(
                     credentialsId : 'docker-creds-bala',
-                    usernameVariable : 'Docker-USERNAME'
-                    passwordVariable : 'Docker-Password'
+                    usernameVariable : 'Docker_USERNAME'
+                    passwordVariable : 'Docker_Password'
                 )
                ]){
                 sh 
                 '''
-                echo "$Docker-Password" | docker login \ -u "$Docker-USERNAME" \ --password--stdin
+                echo "$Docker_Password" | docker login \ -u "$Docker_USERNAME" \ --password--stdin
                 '''
                }
             }
