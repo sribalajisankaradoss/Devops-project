@@ -50,7 +50,7 @@ pipeline {
         stage('Compile') {
             steps {
                 dir('4-python-jenkins-docker-app') {
-                sh 'python3 -m py_compileall.'
+                sh 'python3 -m py_compile app.py .'
                 }
             }
         }
