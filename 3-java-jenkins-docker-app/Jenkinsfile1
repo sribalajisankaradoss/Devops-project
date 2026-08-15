@@ -89,7 +89,7 @@ pipeline {
                withCredentials ([
                 usernamePassword(
                     credentialsId : 'docker-creds-bala',
-                    usernameVariable : 'DOCKER_USERNAME'
+                    usernameVariable : 'DOCKER_USERNAME',
                     passwordVariable : 'DOCKER_PASSWORD'
                 )
                ]){
