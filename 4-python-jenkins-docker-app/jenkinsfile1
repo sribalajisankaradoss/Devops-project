@@ -1,0 +1,144 @@
+pipeline {
+    agent 'any'
+    stages {
+
+        stage('Pull the code ') {
+            steps {
+
+                sh 'rm -rf Devops-project'
+
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/sribalajisankaradoss/Devops-project.git'
+            }
+        }
+        
+        stage('Py_check') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                sh '''
+                      echo "Checking Python installation..."
+
+                 if command -v python3 >/dev/null 2>&1; then
+                      echo "Python is already installed."
+                 else
+                      echo "Python is not installed. Installing Python..."
+
+                     sudo apt-get update
+                     sudo apt-get install -y python3 python3-pip python3-venv
+                 fi
+
+                  echo "Python version:"
+                  python3 --version
+
+                   echo "Pip version:"
+                   pip3 --version
+                   '''
+                }
+            }
+        }
+        stage('Setups venv and activate') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    '''
+                }
+            }
+        }
+        stage('Setups venv and activate') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                sh '''
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+        stage('Compile') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                sh 'python3 -m compileall .'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                    sh 'python3 -m pytest'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                    sh 'python3 -m build'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                    sh '''
+                        echo "Building Docker image..."
+                        docker build -t python-jenkins-docker:latest .
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                    sh '''
+                        echo "Starting Docker container..."
+                        docker run --rm -d -p 8989:8989 python-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Docker tag') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                    sh '''
+                        docker tag python-jenkins-docker:latest bala29/python-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Docker login') {
+            steps {
+               withCredentials ([
+                usernamePassword(
+                    credentialsId : 'docker-creds-bala',
+                    usernameVariable : 'DOCKER_USERNAME',
+                    passwordVariable : 'DOCKER_PASSWORD'
+                )
+               ]){
+               sh '''
+                echo "$DOCKER_PASSWORD" | docker login \
+                    -u "$DOCKER_USERNAME" \
+                    --password-stdin
+            '''
+               }
+            }
+        }
+        stage('Docker Image Push') {
+            steps {
+                dir('Devops-project/4-python-jenkins-docker-app') {
+                    sh '''
+                        docker push bala29/python-jenkins-docker:latest
+                    '''
+                }
+            }
+        }
+        stage('Clean') {
+            steps {
+                dir('4-python-jenkins-docker-app') {
+                        cleanWs()
+                }
+            }
+        }
+    }
+}
