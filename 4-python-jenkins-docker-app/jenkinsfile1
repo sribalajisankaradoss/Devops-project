@@ -61,13 +61,6 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
-            steps {
-                dir('4-python-jenkins-docker-app') {
-                    sh 'python3 -m build'
-                }
-            }
-        }
 
         stage('Docker Build') {
             steps {
