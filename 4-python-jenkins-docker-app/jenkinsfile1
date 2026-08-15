@@ -45,16 +45,6 @@ pipeline {
                 }
             }
         }
-        stage('Setups venv and activate') {
-            steps {
-                dir('4-python-jenkins-docker-app') {
-                sh '''
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                    '''
-                }
-            }
-        }
         stage('Compile') {
             steps {
                 dir('4-python-jenkins-docker-app') {
