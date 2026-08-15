@@ -94,7 +94,7 @@ pipeline {
                 )
                ]){
                 sh '''
-                echo "$Docker_Password" | docker login \ 
+                echo "$Docker_Password" | docker login \
                 -u "$Docker_USERNAME" \ 
                 --password--stdin
                 '''
