@@ -46,17 +46,7 @@ pipeline {
                 }
             }
         }
-        stage('Setups venv and activate') {
-            steps {
-                dir('4-python-jenkins-docker-app') {
-                sh '''
-                    apt install python3.12-venv
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    '''
-                }
-            }
-        }
+
         stage('Compile') {
             steps {
                 dir('4-python-jenkins-docker-app') {
